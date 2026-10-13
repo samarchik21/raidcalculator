@@ -48,17 +48,19 @@ h1 span{color:#aab39b}
 .inner::-webkit-scrollbar{width:7px}.inner::-webkit-scrollbar-thumb{background:rgba(255,255,255,.22)}.inner::-webkit-scrollbar-track{background:rgba(0,0,0,.35)}
 .cat{margin-bottom:10px}
 .cat h3{font-size:12px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:var(--dim);padding:2px 0 4px;margin-bottom:5px;border-bottom:1px solid var(--line2)}
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(158px,1fr));gap:4px}
-.item{display:flex;align-items:center;justify-content:space-between;gap:4px;padding:3px 4px 3px 8px;
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:6px}
+.item{display:flex;align-items:center;justify-content:space-between;gap:6px;padding:3px 4px 3px 8px;
   background:rgba(255,255,255,.045);border:1px solid var(--line2);transition:background .12s,border-color .12s}
 .item:hover{background:rgba(255,255,255,.08)}
 .item.has{border-color:rgba(255,255,255,.5);background:rgba(255,255,255,.12)}
-.item .nm{font-size:13px;line-height:1.05;font-weight:700;color:var(--hi);min-width:0;letter-spacing:.03em}
+.item .nm{font-size:13px;line-height:1.05;font-weight:700;color:var(--hi);min-width:0;letter-spacing:.03em; flex: 1;}
+.gun-select{width:100%; background:rgba(0,0,0,.6); color:var(--hi); border:1px solid rgba(255,255,255,.2); font-family:var(--body); font-weight:700; font-size:13px; padding:4px; outline:none; border-radius: 2px;}
+.gun-select:focus{border-color:rgba(255,255,255,.5); background:rgba(0,0,0,.8);}
 .ctr{display:flex;align-items:center;flex:0 0 auto}
 .ctr button{width:22px;height:26px;border:0;background:rgba(255,255,255,.1);color:var(--hi);font-size:16px;cursor:pointer;font-family:var(--body);user-select:none}
 .ctr button:hover{background:rgba(255,255,255,.24)}
 .ctr button:active{background:rgba(255,255,255,.34)}
-.ctr input{width:46px;height:26px;text-align:center;background:rgba(0,0,0,.55);color:var(--hi);border:0;font:700 14px var(--body);-moz-appearance:textfield}
+.ctr input{width:56px;height:26px;text-align:center;background:rgba(0,0,0,.55);color:var(--hi);border:0;font:700 14px var(--body);-moz-appearance:textfield}
 .ctr input::-webkit-outer-spin-button,.ctr input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
 .ctr input:focus{outline:1px solid rgba(255,255,255,.6);background:rgba(0,0,0,.75)}
 .actions{display:flex;gap:6px;flex-wrap:wrap;margin-top:4px;padding:8px 0 2px;position:sticky;bottom:-10px;background:linear-gradient(transparent,rgba(9,11,8,.96) 25%)}
@@ -100,7 +102,7 @@ footer{margin-top:8px;text-align:center;font-size:11px;letter-spacing:.25em;colo
 
   <div class="layout">
     <section class="block">
-      <h2>Рейдлут <small>введите рейдлут</small></h2>
+      <h2>Рейдлут <small>введите калибр и выберите оружие</small></h2>
       <div class="inner">
         <div id="arsenal"></div>
         <div class="actions">
@@ -120,7 +122,7 @@ footer{margin-top:8px;text-align:center;font-size:11px;letter-spacing:.25em;colo
 
   <details class="note"><summary style="cursor:pointer;color:var(--text);letter-spacing:.08em"><b>Как считается</b> (нажмите, чтобы раскрыть)</summary>
      Для каждой постройки в таблице указано, сколько штук лута нужно, чтобы разрушить её полностью. Один предмет наносит 1/N её прочности. Доля от всех ваших предметов складывается, и сумма 100% и больше означает полное разрушение.
-    Количество патронов зависит от оружия, поэтому патроны вводятся по моделям.
+    Количество патронов зависит от оружия, поэтому сначала введите количество патронов нужного калибра, а затем выберите оружие.
     Для заборов учитывается только взрывчатка: пластид (2 шт.) или гранаты (14 шт.).
     Реальные значения могут отличаться в зависимости от дистанции и настроек сервера.
   </details>
@@ -133,7 +135,7 @@ footer{margin-top:8px;text-align:center;font-size:11px;letter-spacing:.25em;colo
 
 /* ---------- ДАННЫЕ ИЗ ТАБЛИЦ ---------- */
 
-// Оружие: [id, название, калибр]. Порядок важен — он же порядок чисел в массивах ниже.
+// Оружие: [id, название, калибр]. Порядок важен.
 const WEAPONS = [
   ['aksu','AKSU','5.45x39'],['ak74','AK-74','5.45x39'],
   ['m16','M-16','5.56x45'],['m4a1','M4A1','5.56x45'],['aug1','AUG 1','5.56x45'],['augax','AUG AX','5.56x45'],
@@ -157,7 +159,7 @@ const EXPLOSIVES = [
 
 // Названия для подсказок "не хватает"
 const LABEL = {};
-WEAPONS.forEach(w=>LABEL[w[0]]='патр. '+w[1]+' '+w[2]);
+WEAPONS.forEach(w=>LABEL[w[0]]='патр. '+w[1]);
 LABEL.plastid=['пластид','пластида','пластидов'];
 LABEL.grenade=['граната','гранаты','гранат'];
 LABEL.m79=['граната M79','гранаты M79','гранат M79'];
@@ -181,7 +183,6 @@ const DATA = {
   doorSmall:      mk([747,608,455,506,536,455,455,506,444,543,444,331,338,326,341,326,326,398,326,653,653,653],[15,4,2,43,15]),
   doorSmallMetal: mk([560,456,341,379,402,341,341,379,333,407,333,248,253,244,256,244,244,299,244,490,490,490],[11,3,2,32,11]),
   wallSmall:      mk([713,581,435,483,511,434,434,483,424,518,424,316,322,311,326,311,311,380,311,623,623,623],[14,4,2,41,14]),
-  // В таблице у FAMAS и AUG AX стоит 434 — взято как есть
   wallSmallMetal: mk([529,431,323,359,380,434,434,359,315,385,315,235,240,231,242,231,231,282,231,463,463,463],[10,3,2,31,10]),
   window:         mk([586,477,357,397,420,357,357,397,349,426,349,260,265,256,268,256,256,312,256,512,512,512],[23,6,4,70,23]),
   windowMetal:    mk([492,401,300,334,353,300,300,334,293,358,293,218,223,215,225,215,215,263,215,430,430,430],[17,4,3,50,17]),
@@ -199,12 +200,10 @@ const DATA = {
   pal2Walls:      mk(A_PAL,EX_PAL)
 };
 
-// Заборы: полный рейд — пластид ИЛИ гранаты (ЕГД-5/М67/M79)
 function fence(){ return { plastid:2, grenade:14, m79:14 }; }
 DATA.fenceWood  = fence();
 DATA.fenceMetal = fence();
 
-// Список построек по группам
 const GROUPS = [
   ['Заборы', [
     ['fenceWood','Деревянный забор (полный рейд)'],
@@ -235,73 +234,116 @@ const GROUPS = [
 ];
 
 /* ---------- СОСТОЯНИЕ ---------- */
-const STORE_KEY = 'dayz_raid_calc_v1';
+const STORE_KEY = 'dayz_raid_calc_v2';
 let inv = {};
 try { inv = JSON.parse(localStorage.getItem(STORE_KEY) || '{}') || {}; } catch(e){ inv = {}; }
 function save(){ try{ localStorage.setItem(STORE_KEY, JSON.stringify(inv)); }catch(e){} }
 function get(id){ return Math.max(0, parseInt(inv[id],10) || 0); }
+function getSelectedGun(cal) {
+  const guns = WEAPONS.filter(w => w[2] === cal);
+  return inv['gun_' + cal] || guns[0][0]; 
+}
 
 /* ---------- ПОСТРОЕНИЕ АРСЕНАЛА ---------- */
-function itemHTML(id, name, hint){
-  const v = get(id);
-  return '<div class="item'+(v>0?' has':'')+'" data-id="'+id+'">'
-    + '<div class="nm">'+name+(hint?'<small>'+hint+'</small>':'')+'</div>'
-    + '<div class="ctr"><button type="button" data-d="-10" title="-10">−</button>'
-    + '<input type="number" min="0" step="1" inputmode="numeric" value="'+v+'" aria-label="'+name+'">'
-    + '<button type="button" data-d="10" title="+10">+</button></div></div>';
-}
 function buildArsenal(){
   let h = '';
-  h += '<div class="cat"><h3>Взрывчатка и мины</h3><div class="grid">'
-     + EXPLOSIVES.map(e=>itemHTML(e[0],e[1])).join('') + '</div></div>';
-  CALIBERS.forEach(cal=>{
-    const list = WEAPONS.filter(w=>w[2]===cal);
-    h += '<div class="cat"><h3>Патроны '+cal+'</h3><div class="grid">'
-       + list.map(w=>itemHTML(w[0],w[1])).join('') + '</div></div>';
+  // Отрисовка взрывчатки (как раньше)
+  h += '<div class="cat"><h3>Взрывчатка и мины</h3><div class="grid">';
+  EXPLOSIVES.forEach(e => {
+    const id = e[0], name = e[1];
+    const v = get(id);
+    h += `<div class="item${v>0?' has':''}" data-id="${id}" data-type="explosive">
+            <div class="nm">${name}</div>
+            <div class="ctr">
+              <button type="button" data-d="-1" title="-1">−</button>
+              <input type="number" min="0" step="1" inputmode="numeric" value="${v}">
+              <button type="button" data-d="1" title="+1">+</button>
+            </div>
+          </div>`;
+  });
+  h += '</div></div>';
+
+  // Отрисовка калибров с селектом для пушек
+  CALIBERS.forEach(cal => {
+    const list = WEAPONS.filter(w => w[2] === cal);
+    const ammoId = 'ammo_' + cal;
+    const gunKey = 'gun_' + cal;
+    const v = get(ammoId);
+    const selGun = getSelectedGun(cal);
+
+    let options = list.map(w => `<option value="${w[0]}" ${w[0]===selGun?'selected':''}>${w[1]}</option>`).join('');
+
+    h += `<div class="cat"><h3>Патроны ${cal}</h3>
+          <div class="grid">
+            <div class="item${v>0?' has':''}" data-id="${ammoId}" data-type="ammo">
+              <div class="nm">
+                <select data-gunkey="${gunKey}" class="gun-select">${options}</select>
+              </div>
+              <div class="ctr">
+                <button type="button" data-d="-10" title="-10">−</button>
+                <input type="number" min="0" step="10" inputmode="numeric" value="${v}">
+                <button type="button" data-d="10" title="+10">+</button>
+              </div>
+            </div>
+          </div>
+        </div>`;
   });
   document.getElementById('arsenal').innerHTML = h;
-  updateHeader();
 }
 
-function updateHeader(){}
 function setValue(box, val){
   const id = box.getAttribute('data-id');
   val = Math.max(0, Math.min(999999, Math.floor(val) || 0));
   if(val>0) inv[id]=val; else delete inv[id];
   box.querySelector('input').value = val;
   box.classList.toggle('has', val>0);
-  save(); updateHeader();
+  save();
 }
+
 const arsenalEl = document.getElementById('arsenal');
+// Кнопки + и -
 arsenalEl.addEventListener('click', function(e){
   const b = e.target.closest('button[data-d]');
   if(!b) return;
   const box = b.closest('.item');
   const d = parseInt(b.getAttribute('data-d'),10);
-  // для взрывчатки шаг 1, для патронов шаг 10
-  const id = box.getAttribute('data-id');
-  const isAmmo = ORDER.indexOf(id)>=0;
-  const step = isAmmo ? d : (d>0?1:-1);
-  setValue(box, get(id)+step);
+  setValue(box, get(box.getAttribute('data-id')) + d);
 });
+// Ручной ввод
 arsenalEl.addEventListener('input', function(e){
-  const inp = e.target;
-  if(inp.tagName!=='INPUT') return;
-  setValue(inp.closest('.item'), parseInt(inp.value,10));
-  // не перезаписываем поле во время ввода пустой строки
+  if(e.target.tagName==='INPUT'){
+    setValue(e.target.closest('.item'), parseInt(e.target.value,10));
+  }
 });
+// Потеря фокуса (восстановление числа, если поле пустое)
 arsenalEl.addEventListener('change', function(e){
   if(e.target.tagName==='INPUT') e.target.value = get(e.target.closest('.item').getAttribute('data-id'));
 });
+// Изменение оружия в выпадающем списке
+arsenalEl.addEventListener('change', function(e){
+  if(e.target.tagName==='SELECT') {
+    const gunKey = e.target.getAttribute('data-gunkey');
+    inv[gunKey] = e.target.value;
+    save();
+  }
+});
 
 /* ---------- РАСЧЁТ ---------- */
-// Суммарная доля разрушения: каждый предмет наносит count / cost
 function calcStructure(costs){
   let frac = 0;
-  for(const id in costs){
-    const have = get(id);
-    if(have>0) frac += have / costs[id];
-  }
+  // Считаем взрывчатку
+  EXPLOSIVES.forEach(e => {
+    const have = get(e[0]);
+    if(have > 0 && costs[e[0]]) frac += have / costs[e[0]];
+  });
+  // Считаем патроны (используя выбранное оружие)
+  CALIBERS.forEach(cal => {
+    const ammoCount = get('ammo_' + cal);
+    if(ammoCount > 0) {
+      const selectedGunId = getSelectedGun(cal);
+      if(costs[selectedGunId]) frac += ammoCount / costs[selectedGunId];
+    }
+  });
   return frac;
 }
 
@@ -317,23 +359,32 @@ function fmtItem(id, n){
   return n+' '+l;
 }
 
-// Что ориентировочно не хватает (альтернативы на выбор)
+// Показываем недостающие предметы
 function missingText(costs, remaining){
   const parts = [];
   const exOrder = ['plastid','grenade','m79','claymore','mine'];
+  
+  // Взрывчатка
   exOrder.forEach(id=>{
     if(costs[id]) parts.push(fmtItem(id, Math.max(1, Math.ceil(remaining*costs[id]))));
   });
-  // патроны: самый лёгкий путь = оружие с наименьшим числом патронов
-  const ammoIds = Object.keys(costs).filter(id=>exOrder.indexOf(id)<0);
-  const byCost = ammoIds.slice().sort((a,b)=>costs[a]-costs[b]);
-  const pick = [];
-  if(byCost.length) pick.push(byCost[0]);                       // самый дешёвый вообще
-  const owned = byCost.filter(id=>get(id)>0 && pick.indexOf(id)<0);
-  if(owned.length) pick.push(owned[0]);                         // самый дешёвый из имеющихся у игрока
-  pick.forEach(id=>{
-    parts.push(fmtItem(id, Math.max(1, Math.ceil(remaining*costs[id]))));
+
+  // Патроны: показываем нехватку для пушек, которые сейчас выбраны в селектах (или самых дешевых)
+  let ammoCandidates = [];
+  CALIBERS.forEach(cal => {
+    const selGun = getSelectedGun(cal);
+    if(costs[selGun]) {
+      ammoCandidates.push({ id: selGun, cost: costs[selGun], cal: cal });
+    }
   });
+  
+  if (ammoCandidates.length > 0) {
+    // Берем самую эффективную пушку из выбранных (с наименьшим числом патронов на фулл разрушение)
+    ammoCandidates.sort((a,b) => a.cost - b.cost);
+    const bestGun = ammoCandidates[0].id;
+    parts.push(fmtItem(bestGun, Math.max(1, Math.ceil(remaining * costs[bestGun]))));
+  }
+
   return parts;
 }
 
@@ -364,7 +415,9 @@ function renderResults(){
       let miss = '';
       if(frac<1){
         const parts = missingText(costs, 1-frac);
-        miss = '<div class="miss"><b>Не хватает:</b> ≈ '+parts.join(' &nbsp;·&nbsp; ')+'</div>';
+        if (parts.length > 0) {
+           miss = '<div class="miss"><b>Не хватает:</b> ≈ '+parts.join(' &nbsp;·&nbsp; ')+'</div>';
+        }
       }
       const w = Math.min(100, pct);
       html += '<div class="res '+cls+'"><div class="top"><span class="name">'+s[1]+'</span><span class="badge">'+badge+'</span></div>'
