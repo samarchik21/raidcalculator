@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DayZ — Калькулятор рейда</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --panel:rgba(9,11,8,.80); --line:rgba(255,255,255,.14); --line2:rgba(255,255,255,.07);
+  --text:#d3d6cc; --dim:#868c7e; --hi:#f1f1ea;
+  --ok:#8fa876; --warn:#b79d4b; --bad:#a8403a; --blood:#8e1414; --blood-b:#b82a24;
+  --body:'Roboto Condensed','Arial Narrow','Segoe UI',sans-serif;
+  --head:'Roboto Condensed','Arial Narrow',Impact,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  font-family:var(--body);color:var(--text);min-height:100vh;padding:14px 12px 16px;
+  background:
+    url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='640' height='190' viewBox='0 0 640 190'><path fill='%230a0d09' d='M-10 190 L-35 190 L-22 186 L-30 167 L-20 163 L-26 143 L-17 139 L-22 120 L-15 116 L-17 97 L-12 93 L-10 63 L-8 93 L-3 97 L-5 116 L2 120 L-3 139 L6 143 L-0 163 L10 167 L2 186 L15 190 L-10 190Z M45 190 L20 190 L33 186 L25 167 L35 163 L29 143 L38 139 L33 120 L40 116 L38 97 L43 93 L45 63 L47 93 L52 97 L50 116 L57 120 L52 139 L61 143 L55 163 L65 167 L57 186 L70 190 L45 190Z M103 190 L75 190 L89 186 L80 163 L92 159 L85 137 L95 133 L90 110 L97 106 L95 83 L100 79 L103 45 L106 79 L111 83 L109 106 L116 110 L111 133 L121 137 L114 159 L126 163 L117 186 L131 190 L103 190Z M141 190 L122 190 L132 186 L125 173 L134 169 L129 156 L136 152 L132 139 L137 135 L135 122 L139 118 L141 97 L143 118 L147 122 L145 135 L150 139 L146 152 L153 156 L148 169 L157 173 L150 186 L160 190 L141 190Z M199 190 L174 190 L187 186 L178 166 L189 162 L183 142 L192 138 L187 118 L194 114 L192 94 L197 90 L199 60 L201 90 L206 94 L204 114 L211 118 L206 138 L215 142 L209 162 L220 166 L211 186 L224 190 L199 190Z M236 190 L219 190 L228 186 L222 175 L230 171 L225 160 L231 156 L227 145 L233 141 L230 130 L234 126 L236 108 L238 126 L242 130 L239 141 L245 145 L241 156 L247 160 L242 171 L250 175 L244 186 L253 190 L236 190Z M290 190 L269 190 L280 186 L272 170 L282 166 L276 150 L284 146 L280 130 L286 126 L283 111 L288 107 L290 82 L292 107 L297 111 L294 126 L300 130 L296 146 L304 150 L298 166 L308 170 L300 186 L311 190 L290 190Z M325 190 L308 190 L317 186 L311 175 L319 171 L314 160 L320 156 L316 145 L322 141 L319 130 L323 126 L325 109 L327 126 L331 130 L328 141 L334 145 L330 156 L336 160 L331 171 L339 175 L333 186 L342 190 L325 190Z M353 190 L325 190 L339 186 L330 163 L342 159 L335 136 L345 132 L340 109 L347 105 L345 83 L350 79 L353 44 L356 79 L361 83 L359 105 L366 109 L361 132 L371 136 L364 159 L376 163 L367 186 L381 190 L353 190Z M404 190 L379 190 L392 186 L384 167 L394 163 L388 143 L397 139 L392 120 L399 116 L397 97 L402 93 L404 63 L406 93 L411 97 L409 116 L416 120 L411 139 L420 143 L414 163 L424 167 L416 186 L429 190 L404 190Z M440 190 L412 190 L426 186 L417 163 L429 159 L422 135 L431 131 L427 108 L434 104 L432 80 L437 76 L440 41 L443 76 L448 80 L446 104 L453 108 L449 131 L458 135 L451 159 L463 163 L454 186 L468 190 L440 190Z M466 190 L440 190 L453 186 L444 165 L456 161 L449 140 L458 136 L454 114 L461 110 L458 89 L463 85 L466 53 L469 85 L474 89 L471 110 L478 114 L474 136 L483 140 L476 161 L488 165 L479 186 L492 190 L466 190Z M496 190 L480 190 L489 186 L483 176 L490 172 L485 162 L492 158 L488 147 L493 143 L490 133 L495 129 L496 113 L497 129 L502 133 L499 143 L504 147 L500 158 L507 162 L502 172 L509 176 L503 186 L512 190 L496 190Z M524 190 L505 190 L515 186 L508 173 L517 169 L511 155 L519 151 L515 138 L520 134 L518 121 L522 117 L524 96 L526 117 L530 121 L528 134 L533 138 L529 151 L537 155 L531 169 L540 173 L533 186 L543 190 L524 190Z M565 190 L537 190 L551 186 L542 163 L554 159 L547 136 L557 132 L552 109 L559 105 L557 83 L562 79 L565 44 L568 79 L573 83 L571 105 L578 109 L573 132 L583 136 L576 159 L588 163 L579 186 L593 190 L565 190Z M592 190 L560 190 L576 186 L566 159 L579 155 L572 128 L582 124 L578 97 L586 93 L583 66 L589 62 L592 21 L595 62 L601 66 L598 93 L606 97 L602 124 L612 128 L605 155 L618 159 L608 186 L624 190 L592 190Z M647 190 L625 190 L636 186 L629 170 L639 166 L633 149 L641 145 L636 129 L643 125 L640 108 L645 104 L647 79 L649 104 L654 108 L651 125 L658 129 L653 145 L661 149 L655 166 L665 170 L658 186 L669 190 L647 190Z M0 176H640V190H0Z'/></svg>") repeat-x left bottom/640px 190px,
+    radial-gradient(ellipse at 50% 100%,rgba(150,160,140,.22),transparent 60%),
+    linear-gradient(180deg,rgba(6,8,5,.62),rgba(6,8,5,.9)),
+    linear-gradient(180deg,#667064 0%,#4a5448 38%,#2b3229 100%);
+  background-attachment:fixed;
+}
+.pda{max-width:1240px;margin:0 auto}
+header{padding:6px 0 14px;margin-bottom:12px;border-bottom:1px solid var(--line);position:relative}
+header::after{content:"";position:absolute;left:0;bottom:-1px;width:120px;height:2px;background:var(--blood-b);box-shadow:0 0 10px rgba(184,42,36,.6)}
+h1{
+  font-family:var(--head);font-weight:700;font-size:clamp(24px,3.6vw,38px);letter-spacing:.22em;text-transform:uppercase;
+  color:var(--hi);text-shadow:0 2px 12px rgba(0,0,0,.85);line-height:1.05;
+}
+h1 span{color:#aab39b}
+.sub{margin-top:5px;font-size:12.5px;letter-spacing:.34em;color:var(--dim);text-transform:uppercase}
+.layout{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);gap:12px;align-items:stretch}
+@media(min-width:981px){.layout{height:calc(100vh - 150px);min-height:460px}}
+@media(max-width:980px){.layout{grid-template-columns:1fr}}
+.block{display:flex;flex-direction:column;min-height:0;background:var(--panel);border:1px solid var(--line);backdrop-filter:blur(5px);-webkit-backdrop-filter:blur(5px);box-shadow:0 10px 30px rgba(0,0,0,.45)}
+.block>h2{
+  flex:0 0 auto;font-family:var(--head);font-weight:700;font-size:14px;letter-spacing:.2em;text-transform:uppercase;color:var(--hi);
+  padding:9px 14px;border-bottom:1px solid var(--line);background:rgba(255,255,255,.05);
+}
+.block>h2 small{font-weight:400;font-size:12px;letter-spacing:.06em;color:var(--dim);margin-left:10px;text-transform:none}
+.inner{padding:10px 12px;flex:1 1 auto;min-height:0}
+@media(min-width:981px){.inner{overflow-y:auto}}
+.inner::-webkit-scrollbar{width:7px}.inner::-webkit-scrollbar-thumb{background:rgba(255,255,255,.22)}.inner::-webkit-scrollbar-track{background:rgba(0,0,0,.35)}
+.cat{margin-bottom:10px}
+.cat h3{font-size:12px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:var(--dim);padding:2px 0 4px;margin-bottom:5px;border-bottom:1px solid var(--line2)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(158px,1fr));gap:4px}
+.item{display:flex;align-items:center;justify-content:space-between;gap:4px;padding:3px 4px 3px 8px;
+  background:rgba(255,255,255,.045);border:1px solid var(--line2);transition:background .12s,border-color .12s}
+.item:hover{background:rgba(255,255,255,.08)}
+.item.has{border-color:rgba(255,255,255,.5);background:rgba(255,255,255,.12)}
+.item .nm{font-size:13px;line-height:1.05;font-weight:700;color:var(--hi);min-width:0;letter-spacing:.03em}
+.ctr{display:flex;align-items:center;flex:0 0 auto}
+.ctr button{width:22px;height:26px;border:0;background:rgba(255,255,255,.1);color:var(--hi);font-size:16px;cursor:pointer;font-family:var(--body);user-select:none}
+.ctr button:hover{background:rgba(255,255,255,.24)}
+.ctr button:active{background:rgba(255,255,255,.34)}
+.ctr input{width:46px;height:26px;text-align:center;background:rgba(0,0,0,.55);color:var(--hi);border:0;font:700 14px var(--body);-moz-appearance:textfield}
+.ctr input::-webkit-outer-spin-button,.ctr input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+.ctr input:focus{outline:1px solid rgba(255,255,255,.6);background:rgba(0,0,0,.75)}
+.actions{display:flex;gap:6px;flex-wrap:wrap;margin-top:4px;padding:8px 0 2px;position:sticky;bottom:-10px;background:linear-gradient(transparent,rgba(9,11,8,.96) 25%)}
+.btn{flex:1 1 200px;padding:10px 14px;cursor:pointer;border:1px solid rgba(255,255,255,.28);border-left:4px solid var(--blood-b);
+  font-family:var(--head);font-weight:700;font-size:15px;letter-spacing:.22em;text-transform:uppercase;color:var(--hi);
+  background:rgba(255,255,255,.09);transition:background .12s}
+.btn:hover{background:rgba(255,255,255,.2)}
+.btn:active{background:rgba(255,255,255,.3)}
+.btn.alt{flex:0 1 auto;border-left:1px solid rgba(255,255,255,.28);font-size:12.5px;letter-spacing:.14em;color:var(--text)}
+.summary{padding:6px 10px;margin-bottom:10px;border:1px solid var(--line);background:rgba(0,0,0,.35);font-size:13.5px;letter-spacing:.06em}
+.summary b{color:var(--hi)}
+.empty{padding:34px 10px;text-align:center;color:var(--dim);letter-spacing:.06em;line-height:1.6}
+.rgroup{margin-bottom:10px}
+.rgroup h3{font-size:12px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:var(--dim);padding-bottom:4px;margin-bottom:5px;border-bottom:1px solid var(--line2)}
+.res{padding:5px 10px 6px;margin-bottom:4px;background:rgba(255,255,255,.04);border:1px solid var(--line2);border-left:3px solid #555}
+.res.full{border-left-color:var(--ok)}.res.part{border-left-color:var(--warn)}.res.none{border-left-color:var(--bad)}
+.res .top{display:flex;justify-content:space-between;align-items:baseline;gap:8px;flex-wrap:wrap}
+.res .name{font-weight:700;font-size:14px;color:var(--hi);letter-spacing:.03em}
+.badge{font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;white-space:nowrap}
+.full .badge{color:var(--ok)}.part .badge{color:var(--warn)}.none .badge{color:var(--bad)}
+.bar{position:relative;height:13px;margin:4px 0 3px;background:rgba(255,255,255,.09);overflow:hidden}
+.fill{height:100%;width:0;transition:width .7s cubic-bezier(.2,.8,.2,1);background:#6f7a66}
+.full .fill{background:var(--ok)}.part .fill{background:var(--warn)}.none .fill{background:var(--bad)}
+.bar span{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;letter-spacing:.08em;color:#fff;text-shadow:0 1px 3px #000;line-height:1}
+.msg{font-size:12px;color:#b2b6a8}
+.miss{font-size:12px;color:var(--dim);line-height:1.3}
+.miss b{color:#a2a798;font-weight:700}
+.note{margin-top:10px;padding:7px 12px;font-size:12px;line-height:1.5;color:var(--dim);border:1px solid var(--line2);background:rgba(0,0,0,.35)}
+.note b{color:var(--text)}
+footer{margin-top:8px;text-align:center;font-size:11px;letter-spacing:.25em;color:rgba(255,255,255,.35);text-transform:uppercase}
+</style>
+</head>
+<body>
+<div class="pda">
+  <header>
+    <h1>Калькулятор <span>рейда пещеры виталика</span></h1>
+    <div class="sub">Created by Clan SS</div>
+  </header>
+
+  <div class="layout">
+    <section class="block">
+      <h2>Рейдлут <small>введите рейдлут</small></h2>
+      <div class="inner">
+        <div id="arsenal"></div>
+        <div class="actions">
+          <button class="btn" id="calcBtn" type="button">Посчитать</button>
+          <button class="btn alt" id="resetBtn" type="button">Сбросить</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="block">
+      <h2>Результаты <small>урон от разного лута суммируется</small></h2>
+      <div class="inner">
+        <div id="results"><div class="empty">Заполните рейдлут и нажмите<br>«Посчитать».</div></div>
+      </div>
+    </section>
+  </div>
+
+  <details class="note"><summary style="cursor:pointer;color:var(--text);letter-spacing:.08em"><b>Как считается</b> (нажмите, чтобы раскрыть)</summary>
+     Для каждой постройки в таблице указано, сколько штук лута нужно, чтобы разрушить её полностью. Один предмет наносит 1/N её прочности. Доля от всех ваших предметов складывается, и сумма 100% и больше означает полное разрушение.
+    Количество патронов зависит от оружия, поэтому патроны вводятся по моделям.
+    Для заборов учитывается только взрывчатка: пластид (2 шт.) или гранаты (14 шт.).
+    Реальные значения могут отличаться в зависимости от дистанции и настроек сервера.
+  </details>
+  <footer>Created by Clan SS</footer>
+</div>
+
+<script>
+(function(){
+'use strict';
+
+/* ---------- ДАННЫЕ ИЗ ТАБЛИЦ ---------- */
+
+// Оружие: [id, название, калибр]. Порядок важен — он же порядок чисел в массивах ниже.
+const WEAPONS = [
+  ['aksu','AKSU','5.45x39'],['ak74','AK-74','5.45x39'],
+  ['m16','M-16','5.56x45'],['m4a1','M4A1','5.56x45'],['aug1','AUG 1','5.56x45'],['augax','AUG AX','5.56x45'],
+  ['famas','FAMAS','5.56x45'],['ak101','AK-101','5.56x45'],
+  ['sks','SKS','7.62x39'],['akm','AKM','7.62x39'],['cr527','CR 527','7.62x39'],
+  ['mosin','Mosin 9130','7.62x54'],['svd','SVD','7.62x54'],['sv98','SV 98','7.62x54'],
+  ['blaze','Blaze','.308'],['m70','Winchester M70','.308'],['cz550','CZ 550','.308'],['fnfal','FN FAL','.308'],['m14','M14','.308'],
+  ['vikhr','Vikhr','9x39'],['asval','AS VAL','9x39'],['vss','VSS','9x39']
+];
+const ORDER = WEAPONS.map(w=>w[0]);
+const CALIBERS = ['5.45x39','5.56x45','7.62x39','7.62x54','.308','9x39'];
+
+// Взрывчатка и т.п.
+const EXPLOSIVES = [
+  ['plastid','Пластид','Plastic Explosive'],
+  ['grenade','Граната ЕГД-5 / М67','ручная граната'],
+  ['m79','Граната M79','подствольник / M79, 40 мм'],
+  ['claymore','Клеймор','Claymore'],
+  ['mine','Мина','Land Mine']
+];
+
+// Названия для подсказок "не хватает"
+const LABEL = {};
+WEAPONS.forEach(w=>LABEL[w[0]]='патр. '+w[1]+' '+w[2]);
+LABEL.plastid=['пластид','пластида','пластидов'];
+LABEL.grenade=['граната','гранаты','гранат'];
+LABEL.m79=['граната M79','гранаты M79','гранат M79'];
+LABEL.claymore=['клеймор','клеймора','клейморов'];
+LABEL.mine=['мина','мины','мин'];
+
+// Сборка таблицы стоимости: массив по оружию + [граната, клеймор, пластид, мина, M79]
+function mk(arr, ex){
+  const c = {};
+  ORDER.forEach((id,i)=>c[id]=arr[i]);
+  c.grenade=ex[0]; c.claymore=ex[1]; c.plastid=ex[2]; c.mine=ex[3]; c.m79=ex[4];
+  return c;
+}
+
+const A_PAL   = [3360,2736,2049,2277,2411,2049,2050,2277,2000,2443,2000,1488,1520,1467,1536,1467,1467,1792,1467,2937,2937,2937];
+const A_PAL_M = [3360,2736,2049,2277,2411,2049,2050,2277,2000,2443,2000,1490,1520,1467,1536,1467,1467,1792,1467,2937,2937,2937];
+const A_PAL_2 = [3373,2743,2055,2283,2417,2054,2055,2283,2006,2453,2000,1494,1524,1467,1539,1467,1467,1796,1467,2947,2947,2947];
+const EX_PAL  = [37,9,5,108,37];
+
+const DATA = {
+  doorSmall:      mk([747,608,455,506,536,455,455,506,444,543,444,331,338,326,341,326,326,398,326,653,653,653],[15,4,2,43,15]),
+  doorSmallMetal: mk([560,456,341,379,402,341,341,379,333,407,333,248,253,244,256,244,244,299,244,490,490,490],[11,3,2,32,11]),
+  wallSmall:      mk([713,581,435,483,511,434,434,483,424,518,424,316,322,311,326,311,311,380,311,623,623,623],[14,4,2,41,14]),
+  // В таблице у FAMAS и AUG AX стоит 434 — взято как есть
+  wallSmallMetal: mk([529,431,323,359,380,434,434,359,315,385,315,235,240,231,242,231,231,282,231,463,463,463],[10,3,2,31,10]),
+  window:         mk([586,477,357,397,420,357,357,397,349,426,349,260,265,256,268,256,256,312,256,512,512,512],[23,6,4,70,23]),
+  windowMetal:    mk([492,401,300,334,353,300,300,334,293,358,293,218,223,215,225,215,215,263,215,430,430,430],[17,4,3,50,17]),
+  palisade:       mk(A_PAL,EX_PAL),
+  palGate:        mk(A_PAL,EX_PAL),
+  palDoor:        mk(A_PAL,EX_PAL),
+  palDoorwayBack: mk(A_PAL,EX_PAL),
+  palDoorBack:    mk(A_PAL,EX_PAL),
+  palStakesOut:   mk(A_PAL_M,EX_PAL),
+  palStakesRoof:  mk([707,575,431,479,507,431,431,479,421,515,418,313,319,307,323,307,307,376,307,619,619,619],[21,5,4,85,21]),
+  palMetalWall:   mk([218,177,133,148,156,133,133,148,130,159,129,97,99,95,100,95,95,116,95,191,191,191],[37,9,7,124,37]),
+  palRoof:        mk(A_PAL_M,EX_PAL),
+  palSide:        mk(A_PAL,EX_PAL),
+  pal2Wall:       mk(A_PAL_2,EX_PAL),
+  pal2Walls:      mk(A_PAL,EX_PAL)
+};
+
+// Заборы: полный рейд — пластид ИЛИ гранаты (ЕГД-5/М67/M79)
+function fence(){ return { plastid:2, grenade:14, m79:14 }; }
+DATA.fenceWood  = fence();
+DATA.fenceMetal = fence();
+
+// Список построек по группам
+const GROUPS = [
+  ['Заборы', [
+    ['fenceWood','Деревянный забор (полный рейд)'],
+    ['fenceMetal','Металлический забор (полный рейд)']
+  ]],
+  ['Двери, баррикады, стены', [
+    ['doorSmall','Малая дверь'],
+    ['doorSmallMetal','Малая дверь (металл. обшивка)'],
+    ['window','Оконная баррикада'],
+    ['windowMetal','Оконная баррикада (металл. обшивка)'],
+    ['wallSmall','Малая / средняя стена'],
+    ['wallSmallMetal','Малая / средняя стена (металл. обшивка)']
+  ]],
+  ['Частокол', [
+    ['palisade','Частокол'],
+    ['palGate','Воротина частокола'],
+    ['palDoor','Дверной проём частокола: дверь'],
+    ['palDoorwayBack','Частокол: дверной проём (зад)'],
+    ['palDoorBack','Частокол: дверь (зад)'],
+    ['palStakesOut','Частокол: наружные колья'],
+    ['palStakesRoof','Частокол: колья крыши'],
+    ['palMetalWall','Частокол: стена металл'],
+    ['palRoof','Частокол: крыша'],
+    ['palSide','Частокол: боковая стена'],
+    ['pal2Wall','Частокол: стена 2 этажа'],
+    ['pal2Walls','Частокол: стены 2 этаж']
+  ]]
+];
+
+/* ---------- СОСТОЯНИЕ ---------- */
+const STORE_KEY = 'dayz_raid_calc_v1';
+let inv = {};
+try { inv = JSON.parse(localStorage.getItem(STORE_KEY) || '{}') || {}; } catch(e){ inv = {}; }
+function save(){ try{ localStorage.setItem(STORE_KEY, JSON.stringify(inv)); }catch(e){} }
+function get(id){ return Math.max(0, parseInt(inv[id],10) || 0); }
+
+/* ---------- ПОСТРОЕНИЕ АРСЕНАЛА ---------- */
+function itemHTML(id, name, hint){
+  const v = get(id);
+  return '<div class="item'+(v>0?' has':'')+'" data-id="'+id+'">'
+    + '<div class="nm">'+name+(hint?'<small>'+hint+'</small>':'')+'</div>'
+    + '<div class="ctr"><button type="button" data-d="-10" title="-10">−</button>'
+    + '<input type="number" min="0" step="1" inputmode="numeric" value="'+v+'" aria-label="'+name+'">'
+    + '<button type="button" data-d="10" title="+10">+</button></div></div>';
+}
+function buildArsenal(){
+  let h = '';
+  h += '<div class="cat"><h3>Взрывчатка и мины</h3><div class="grid">'
+     + EXPLOSIVES.map(e=>itemHTML(e[0],e[1])).join('') + '</div></div>';
+  CALIBERS.forEach(cal=>{
+    const list = WEAPONS.filter(w=>w[2]===cal);
+    h += '<div class="cat"><h3>Патроны '+cal+'</h3><div class="grid">'
+       + list.map(w=>itemHTML(w[0],w[1])).join('') + '</div></div>';
+  });
+  document.getElementById('arsenal').innerHTML = h;
+  updateHeader();
+}
+
+function updateHeader(){}
+function setValue(box, val){
+  const id = box.getAttribute('data-id');
+  val = Math.max(0, Math.min(999999, Math.floor(val) || 0));
+  if(val>0) inv[id]=val; else delete inv[id];
+  box.querySelector('input').value = val;
+  box.classList.toggle('has', val>0);
+  save(); updateHeader();
+}
+const arsenalEl = document.getElementById('arsenal');
+arsenalEl.addEventListener('click', function(e){
+  const b = e.target.closest('button[data-d]');
+  if(!b) return;
+  const box = b.closest('.item');
+  const d = parseInt(b.getAttribute('data-d'),10);
+  // для взрывчатки шаг 1, для патронов шаг 10
+  const id = box.getAttribute('data-id');
+  const isAmmo = ORDER.indexOf(id)>=0;
+  const step = isAmmo ? d : (d>0?1:-1);
+  setValue(box, get(id)+step);
+});
+arsenalEl.addEventListener('input', function(e){
+  const inp = e.target;
+  if(inp.tagName!=='INPUT') return;
+  setValue(inp.closest('.item'), parseInt(inp.value,10));
+  // не перезаписываем поле во время ввода пустой строки
+});
+arsenalEl.addEventListener('change', function(e){
+  if(e.target.tagName==='INPUT') e.target.value = get(e.target.closest('.item').getAttribute('data-id'));
+});
+
+/* ---------- РАСЧЁТ ---------- */
+// Суммарная доля разрушения: каждый предмет наносит count / cost
+function calcStructure(costs){
+  let frac = 0;
+  for(const id in costs){
+    const have = get(id);
+    if(have>0) frac += have / costs[id];
+  }
+  return frac;
+}
+
+function plural(n, forms){
+  const m10 = n%10, m100 = n%100;
+  if(m10===1 && m100!==11) return forms[0];
+  if(m10>=2 && m10<=4 && (m100<10 || m100>=20)) return forms[1];
+  return forms[2];
+}
+function fmtItem(id, n){
+  const l = LABEL[id];
+  if(Array.isArray(l)) return n+' '+plural(n,l);
+  return n+' '+l;
+}
+
+// Что ориентировочно не хватает (альтернативы на выбор)
+function missingText(costs, remaining){
+  const parts = [];
+  const exOrder = ['plastid','grenade','m79','claymore','mine'];
+  exOrder.forEach(id=>{
+    if(costs[id]) parts.push(fmtItem(id, Math.max(1, Math.ceil(remaining*costs[id]))));
+  });
+  // патроны: самый лёгкий путь = оружие с наименьшим числом патронов
+  const ammoIds = Object.keys(costs).filter(id=>exOrder.indexOf(id)<0);
+  const byCost = ammoIds.slice().sort((a,b)=>costs[a]-costs[b]);
+  const pick = [];
+  if(byCost.length) pick.push(byCost[0]);                       // самый дешёвый вообще
+  const owned = byCost.filter(id=>get(id)>0 && pick.indexOf(id)<0);
+  if(owned.length) pick.push(owned[0]);                         // самый дешёвый из имеющихся у игрока
+  pick.forEach(id=>{
+    parts.push(fmtItem(id, Math.max(1, Math.ceil(remaining*costs[id]))));
+  });
+  return parts;
+}
+
+function fmtPct(p){
+  if(p>=1000) return Math.round(p)+'%';
+  if(p>=100) return Math.round(p)+'%';
+  return (Math.round(p*10)/10).toString().replace('.',',')+'%';
+}
+
+function renderResults(){
+  let total=0, full=0, html='';
+  GROUPS.forEach(g=>{
+    html += '<div class="rgroup"><h3>'+g[0]+'</h3>';
+    g[1].forEach(s=>{
+      const costs = DATA[s[0]];
+      const frac = calcStructure(costs);
+      const pct = frac*100;
+      total++;
+      let cls, badge, msg;
+      if(frac>=1){
+        cls='full'; full++; badge='Разрушено';
+        msg = frac>=2 ? 'Хватит на '+Math.floor(frac)+' '+plural(Math.floor(frac),['такую постройку','такие постройки','таких построек'])+'.' : '';
+      } else if(frac>0){
+        cls='part'; badge='Частично'; msg='';
+      } else {
+        cls='none'; badge='Нет урона'; msg='';
+      }
+      let miss = '';
+      if(frac<1){
+        const parts = missingText(costs, 1-frac);
+        miss = '<div class="miss"><b>Не хватает:</b> ≈ '+parts.join(' &nbsp;·&nbsp; ')+'</div>';
+      }
+      const w = Math.min(100, pct);
+      html += '<div class="res '+cls+'"><div class="top"><span class="name">'+s[1]+'</span><span class="badge">'+badge+'</span></div>'
+            + '<div class="bar"><div class="fill" data-w="'+w+'"></div><span>'+fmtPct(pct)+'</span></div>'
+            + (msg?'<div class="msg">'+msg+'</div>':'') + miss + '</div>';
+    });
+    html += '</div>';
+  });
+  const sum = '<div class="summary">Разрушается полностью: <b>'+full+'</b> из '+total+' построек</div>';
+  const el = document.getElementById('results');
+  el.innerHTML = sum + html;
+  // анимация заполнения баров
+  requestAnimationFrame(function(){
+    requestAnimationFrame(function(){
+      el.querySelectorAll('.fill').forEach(f=>{ f.style.width = f.getAttribute('data-w')+'%'; });
+    });
+  });
+}
+
+document.getElementById('calcBtn').addEventListener('click', function(){
+  renderResults();
+  if(window.matchMedia('(max-width:980px)').matches){
+    document.getElementById('results').scrollIntoView({behavior:'smooth', block:'start'});
+  }
+});
+document.getElementById('resetBtn').addEventListener('click', function(){
+  inv = {}; save(); buildArsenal();
+  document.getElementById('results').innerHTML = '<div class="empty">Рейдлут очищен.<br>Заполните его и нажмите «Посчитать».</div>';
+});
+
+buildArsenal();
+})();
+</script>
+</body>
+</html>
