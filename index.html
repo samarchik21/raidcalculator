@@ -175,6 +175,16 @@ const A_PAL_M = [3360,2736,2049,2277,2411,2049,2050,2277,2000,2443,2000,1490,152
 const A_PAL_2 = [3373,2743,2055,2283,2417,2054,2055,2283,2006,2453,2000,1494,1524,1467,1539,1467,1467,1796,1467,2947,2947,2947];
 const EX_PAL  = [37,9,5,108];
 
+// ДОМ НА ДЕРЕВЕ: массивы данных
+const A_TH_BASE = [1736, 1413, 1058, 1176, 1245, 1058, 1058, 1176, 1033, 1262, 1033, 770, 785, 758, 793, 758, 758, 925, 758, 1517, 1517, 1517];
+const EX_TH_BASE = [33, 50, 5, 98];
+
+const A_TH_FDOOR = [1848, 1505, 1127, 1252, 1326, 1127, 1127, 1252, 1101, 1346, 1101, 819, 835, 803, 844, 803, 803, 985, 803, 1618, 1618, 1618];
+const EX_TH_FDOOR = [35, 10, 12, 356];
+
+const A_TH_DOOR = [1839, 1498, 1122, 1247, 1320, 1121, 1121, 1246, 1095, 1338, 1095, 816, 833, 803, 841, 803, 803, 981, 803, 1607, 1607, 1607];
+const EX_TH_DOOR = [35, 39, 5, 104];
+
 const DATA = {
   doorSmall:      mk([747,608,455,506,536,455,455,506,444,543,444,331,338,326,341,326,326,398,326,653,653,653],[15,4,2,43]),
   doorSmallMetal: mk([560,456,341,379,402,341,341,379,333,407,333,248,253,244,256,244,244,299,244,490,490,490],[11,3,2,32]),
@@ -193,7 +203,14 @@ const DATA = {
   palRoof:        mk(A_PAL_M,EX_PAL),
   palSide:        mk(A_PAL,EX_PAL),
   pal2Wall:       mk(A_PAL_2,EX_PAL),
-  pal2Walls:      mk(A_PAL,EX_PAL)
+  pal2Walls:      mk(A_PAL,EX_PAL),
+  
+  // Добавленные значения для Дома на дереве
+  treehouseWall:      mk(A_TH_BASE, EX_TH_BASE),
+  treehouseFrame:     mk(A_TH_BASE, [999999, 999999, 999999, 999999]), // взрывчатка не наносит урон (X-)
+  treehouseWindow:    mk(A_TH_BASE, EX_TH_BASE),
+  treehouseDoor:      mk(A_TH_DOOR, EX_TH_DOOR),
+  treehouseFloorDoor: mk(A_TH_FDOOR, EX_TH_FDOOR)
 };
 
 function fence(){ return { plastid:2, grenade:14 }; }
@@ -212,6 +229,13 @@ const GROUPS = [
     ['windowMetal','Оконная баррикада (металл. обшивка)'],
     ['wallSmall','Малая / средняя стена'],
     ['wallSmallMetal','Малая / средняя стена (металл. обшивка)']
+  ]],
+  ['Дом на дереве', [
+    ['treehouseWall', 'Деревянная / Боковая стена'],
+    ['treehouseWindow', 'Оконная створка'],
+    ['treehouseFrame', 'Каркас стен'],
+    ['treehouseDoor', 'Дверь'],
+    ['treehouseFloorDoor', 'Дверь пола']
   ]],
   ['Частокол', [
     ['palisade','Частокол'],
@@ -362,7 +386,7 @@ function missingText(costs, remaining){
   
   // Взрывчатка
   exOrder.forEach(id=>{
-    if(costs[id]) parts.push(fmtItem(id, Math.max(1, Math.ceil(remaining*costs[id]))));
+    if(costs[id] && costs[id] !== 999999) parts.push(fmtItem(id, Math.max(1, Math.ceil(remaining*costs[id]))));
   });
 
   // Патроны
