@@ -123,8 +123,6 @@ footer{margin-top:8px;text-align:center;font-size:11px;letter-spacing:.25em;colo
   <details class="note"><summary style="cursor:pointer;color:var(--text);letter-spacing:.08em"><b>Как считается</b> (нажмите, чтобы раскрыть)</summary>
      Для каждой постройки в таблице указано, сколько штук лута нужно, чтобы разрушить её полностью. Один предмет наносит 1/N её прочности. Доля от всех ваших предметов складывается, и сумма 100% и больше означает полное разрушение.
     Количество патронов зависит от оружия, поэтому сначала введите количество патронов нужного калибра, а затем выберите оружие.
-    Для заборов учитывается только взрывчатка: пластид (2 шт.) или гранаты (14 шт.).
-    Реальные значения могут отличаться в зависимости от дистанции и настроек сервера.
   </details>
   <footer>Created by Clan SS</footer>
 </div>
@@ -151,8 +149,7 @@ const CALIBERS = ['5.45x39','5.56x45','7.62x39','7.62x54','.308','9x39'];
 // Взрывчатка и т.п.
 const EXPLOSIVES = [
   ['plastid','Пластид','Plastic Explosive'],
-  ['grenade','Граната ЕГД-5 / М67','ручная граната'],
-  ['m79','Граната M79','подствольник / M79, 40 мм'],
+  ['grenade','Гранаты','ручные и 40-мм'],
   ['claymore','Клеймор','Claymore'],
   ['mine','Мина','Land Mine']
 ];
@@ -162,45 +159,44 @@ const LABEL = {};
 WEAPONS.forEach(w=>LABEL[w[0]]='патр. '+w[1]);
 LABEL.plastid=['пластид','пластида','пластидов'];
 LABEL.grenade=['граната','гранаты','гранат'];
-LABEL.m79=['граната M79','гранаты M79','гранат M79'];
 LABEL.claymore=['клеймор','клеймора','клейморов'];
 LABEL.mine=['мина','мины','мин'];
 
-// Сборка таблицы стоимости: массив по оружию + [граната, клеймор, пластид, мина, M79]
+// Сборка таблицы стоимости: массив по оружию + [гранаты, клеймор, пластид, мина]
 function mk(arr, ex){
   const c = {};
   ORDER.forEach((id,i)=>c[id]=arr[i]);
-  c.grenade=ex[0]; c.claymore=ex[1]; c.plastid=ex[2]; c.mine=ex[3]; c.m79=ex[4];
+  c.grenade=ex[0]; c.claymore=ex[1]; c.plastid=ex[2]; c.mine=ex[3];
   return c;
 }
 
 const A_PAL   = [3360,2736,2049,2277,2411,2049,2050,2277,2000,2443,2000,1488,1520,1467,1536,1467,1467,1792,1467,2937,2937,2937];
 const A_PAL_M = [3360,2736,2049,2277,2411,2049,2050,2277,2000,2443,2000,1490,1520,1467,1536,1467,1467,1792,1467,2937,2937,2937];
 const A_PAL_2 = [3373,2743,2055,2283,2417,2054,2055,2283,2006,2453,2000,1494,1524,1467,1539,1467,1467,1796,1467,2947,2947,2947];
-const EX_PAL  = [37,9,5,108,37];
+const EX_PAL  = [37,9,5,108];
 
 const DATA = {
-  doorSmall:      mk([747,608,455,506,536,455,455,506,444,543,444,331,338,326,341,326,326,398,326,653,653,653],[15,4,2,43,15]),
-  doorSmallMetal: mk([560,456,341,379,402,341,341,379,333,407,333,248,253,244,256,244,244,299,244,490,490,490],[11,3,2,32,11]),
-  wallSmall:      mk([713,581,435,483,511,434,434,483,424,518,424,316,322,311,326,311,311,380,311,623,623,623],[14,4,2,41,14]),
-  wallSmallMetal: mk([529,431,323,359,380,434,434,359,315,385,315,235,240,231,242,231,231,282,231,463,463,463],[10,3,2,31,10]),
-  window:         mk([586,477,357,397,420,357,357,397,349,426,349,260,265,256,268,256,256,312,256,512,512,512],[23,6,4,70,23]),
-  windowMetal:    mk([492,401,300,334,353,300,300,334,293,358,293,218,223,215,225,215,215,263,215,430,430,430],[17,4,3,50,17]),
+  doorSmall:      mk([747,608,455,506,536,455,455,506,444,543,444,331,338,326,341,326,326,398,326,653,653,653],[15,4,2,43]),
+  doorSmallMetal: mk([560,456,341,379,402,341,341,379,333,407,333,248,253,244,256,244,244,299,244,490,490,490],[11,3,2,32]),
+  wallSmall:      mk([713,581,435,483,511,434,434,483,424,518,424,316,322,311,326,311,311,380,311,623,623,623],[14,4,2,41]),
+  wallSmallMetal: mk([529,431,323,359,380,434,434,359,315,385,315,235,240,231,242,231,231,282,231,463,463,463],[10,3,2,31]),
+  window:         mk([586,477,357,397,420,357,357,397,349,426,349,260,265,256,268,256,256,312,256,512,512,512],[23,6,4,70]),
+  windowMetal:    mk([492,401,300,334,353,300,300,334,293,358,293,218,223,215,225,215,215,263,215,430,430,430],[17,4,3,50]),
   palisade:       mk(A_PAL,EX_PAL),
   palGate:        mk(A_PAL,EX_PAL),
   palDoor:        mk(A_PAL,EX_PAL),
   palDoorwayBack: mk(A_PAL,EX_PAL),
   palDoorBack:    mk(A_PAL,EX_PAL),
   palStakesOut:   mk(A_PAL_M,EX_PAL),
-  palStakesRoof:  mk([707,575,431,479,507,431,431,479,421,515,418,313,319,307,323,307,307,376,307,619,619,619],[21,5,4,85,21]),
-  palMetalWall:   mk([218,177,133,148,156,133,133,148,130,159,129,97,99,95,100,95,95,116,95,191,191,191],[37,9,7,124,37]),
+  palStakesRoof:  mk([707,575,431,479,507,431,431,479,421,515,418,313,319,307,323,307,307,376,307,619,619,619],[21,5,4,85]),
+  palMetalWall:   mk([218,177,133,148,156,133,133,148,130,159,129,97,99,95,100,95,95,116,95,191,191,191],[37,9,7,124]),
   palRoof:        mk(A_PAL_M,EX_PAL),
   palSide:        mk(A_PAL,EX_PAL),
   pal2Wall:       mk(A_PAL_2,EX_PAL),
   pal2Walls:      mk(A_PAL,EX_PAL)
 };
 
-function fence(){ return { plastid:2, grenade:14, m79:14 }; }
+function fence(){ return { plastid:2, grenade:14 }; }
 DATA.fenceWood  = fence();
 DATA.fenceMetal = fence();
 
@@ -234,7 +230,7 @@ const GROUPS = [
 ];
 
 /* ---------- СОСТОЯНИЕ ---------- */
-const STORE_KEY = 'dayz_raid_calc_v2';
+const STORE_KEY = 'dayz_raid_calc_v3';
 let inv = {};
 try { inv = JSON.parse(localStorage.getItem(STORE_KEY) || '{}') || {}; } catch(e){ inv = {}; }
 function save(){ try{ localStorage.setItem(STORE_KEY, JSON.stringify(inv)); }catch(e){} }
@@ -247,7 +243,7 @@ function getSelectedGun(cal) {
 /* ---------- ПОСТРОЕНИЕ АРСЕНАЛА ---------- */
 function buildArsenal(){
   let h = '';
-  // Отрисовка взрывчатки (как раньше)
+  // Отрисовка взрывчатки
   h += '<div class="cat"><h3>Взрывчатка и мины</h3><div class="grid">';
   EXPLOSIVES.forEach(e => {
     const id = e[0], name = e[1];
@@ -362,14 +358,14 @@ function fmtItem(id, n){
 // Показываем недостающие предметы
 function missingText(costs, remaining){
   const parts = [];
-  const exOrder = ['plastid','grenade','m79','claymore','mine'];
+  const exOrder = ['plastid','grenade','claymore','mine'];
   
   // Взрывчатка
   exOrder.forEach(id=>{
     if(costs[id]) parts.push(fmtItem(id, Math.max(1, Math.ceil(remaining*costs[id]))));
   });
 
-  // Патроны: показываем нехватку для пушек, которые сейчас выбраны в селектах (или самых дешевых)
+  // Патроны
   let ammoCandidates = [];
   CALIBERS.forEach(cal => {
     const selGun = getSelectedGun(cal);
@@ -379,7 +375,6 @@ function missingText(costs, remaining){
   });
   
   if (ammoCandidates.length > 0) {
-    // Берем самую эффективную пушку из выбранных (с наименьшим числом патронов на фулл разрушение)
     ammoCandidates.sort((a,b) => a.cost - b.cost);
     const bestGun = ammoCandidates[0].id;
     parts.push(fmtItem(bestGun, Math.max(1, Math.ceil(remaining * costs[bestGun]))));
